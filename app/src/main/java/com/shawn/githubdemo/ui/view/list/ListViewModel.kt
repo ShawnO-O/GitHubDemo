@@ -1,8 +1,9 @@
 package com.shawn.githubdemo.ui.view.list
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shawn.githubdemo.model.dto.list.ListItem
+import com.shawn.githubdemo.model.dto.list.RepositoriesListItem
 import com.shawn.githubdemo.model.dto.list.ListRequest
 import com.shawn.githubdemo.model.sealeds.UiState
 import com.shawn.githubdemo.model.source.repository.list.ListRepositoryImpl
@@ -13,7 +14,8 @@ import kotlinx.coroutines.launch
 class ListViewModel(private var listRepositoryImpl: ListRepositoryImpl) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState
-    val listData = MutableStateFlow<List<ListItem>>(emptyList())
+    private val _listData = MutableStateFlow<List<RepositoriesListItem>>(emptyList())
+    val listData : StateFlow<List<RepositoriesListItem>> = _listData
     private var currentPage = 1
     private var q: String? = null
 
@@ -24,7 +26,8 @@ class ListViewModel(private var listRepositoryImpl: ListRepositoryImpl) : ViewMo
                 currentPage = 1
                 listRepositoryImpl.getFirstPageList(ListRequest(q = it, page = currentPage))
                     .collect {
-                        listData.value = it.items
+                        Log.d("shawnTest","getFirstPageList: ${it.total_count}")
+                        _listData.value = it.items
                         _uiState.value = UiState.Success
 
                     }
@@ -43,7 +46,7 @@ class ListViewModel(private var listRepositoryImpl: ListRepositoryImpl) : ViewMo
                 listRepositoryImpl.getNextPageList(ListRequest(q = it, page = currentPage))
                     .collect {
                         if(it.items.isNotEmpty()) {
-                            listData.value += it.items
+                            _listData.value += it.items
                             _uiState.value = UiState.Success
                         }else{
                             _uiState.value = UiState.Empty("No more data")

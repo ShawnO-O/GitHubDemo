@@ -1,7 +1,5 @@
 package com.shawn.githubdemo.model.sealeds
 
-import com.shawn.githubdemo.model.dto.list.ListResponse
-
 sealed class UiState {
     data object Loading : UiState()
     data object Success : UiState()

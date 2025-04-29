@@ -1,12 +1,15 @@
 package com.shawn.githubdemo.model.dto.list
 
-data class ListResponse(
+data class RepositoriesListResponse(
+//    @SerializedName("incomplete_results")
     val incomplete_results: Boolean,
-    val items: List<ListItem>,
+//    @SerializedName("items")
+    val items: List<RepositoriesListItem>,
+//    @SerializedName("total_count")
     val total_count: Int
 )
 
-data class ListItem(
+data class RepositoriesListItem(
     val allow_forking: Boolean,
     val archive_url: String,
     val archived: Boolean,

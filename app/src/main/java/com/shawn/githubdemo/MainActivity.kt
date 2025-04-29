@@ -14,11 +14,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.shawn.githubdemo.model.retrofitManager.RetrofitManager
+import com.shawn.githubdemo.model.sealeds.UiState
 import com.shawn.githubdemo.model.source.remote.list.ListRemoteDataSource
 import com.shawn.githubdemo.model.source.repository.list.ListRepositoryImpl
 import com.shawn.githubdemo.ui.ListViewModelFactory
 import com.shawn.githubdemo.ui.theme.GitHubDemoTheme
 import com.shawn.githubdemo.ui.view.list.ListViewModel
+import com.shawn.githubdemo.utils.showToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,6 +45,13 @@ class MainActivity : ComponentActivity() {
         CoroutineScope(Dispatchers.Main).launch{
             listViewModel.apply {
                 uiState.collect {
+                    when(it){
+                        is UiState.Loading -> Log.d("shawnTest","Loading")
+                        is UiState.Success -> Log.d("shawnTest","Success")
+                        is UiState.Error -> it.message.showToast()
+                        is UiState.Empty -> it.message.showToast()
+                        else -> Log.d("shawnTest","Unknown")
+                    }
                     Log.d("shawnTest","uiState:$it")
                     println(it)
                 }

@@ -16,18 +16,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.shawn.githubdemo.model.retrofitManager.RetrofitManager
 import com.shawn.githubdemo.model.sealeds.UiState
 import com.shawn.githubdemo.model.source.remote.list.ListRemoteDataSource
-import com.shawn.githubdemo.model.source.repository.list.ListRepositoryImpl
+import com.shawn.githubdemo.model.source.repository.repoList.RepoListRepositoryImpl
 import com.shawn.githubdemo.ui.ListViewModelFactory
 import com.shawn.githubdemo.ui.theme.GitHubDemoTheme
-import com.shawn.githubdemo.ui.view.list.ListViewModel
+import com.shawn.githubdemo.ui.view.repoList.ListScreen
+import com.shawn.githubdemo.ui.view.repoList.RepoListViewModel
 import com.shawn.githubdemo.utils.showToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.Dispatcher
 
 class MainActivity : ComponentActivity() {
-    private val listViewModel: ListViewModel by viewModels{ListViewModelFactory(ListRepositoryImpl(
+    private val listViewModel: RepoListViewModel by viewModels{ListViewModelFactory(RepoListRepositoryImpl(
         ListRemoteDataSource(RetrofitManager.getApiService())
     ))}
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,29 +59,8 @@ class MainActivity : ComponentActivity() {
         }
         setContent {
             GitHubDemoTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                ListScreen(listViewModel)
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    GitHubDemoTheme {
-        Greeting("Android")
     }
 }

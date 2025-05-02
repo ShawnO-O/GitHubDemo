@@ -1,21 +1,21 @@
-package com.shawn.githubdemo.ui.view.list
+package com.shawn.githubdemo.ui.view.repoList
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shawn.githubdemo.model.dto.list.RepositoriesListItem
-import com.shawn.githubdemo.model.dto.list.ListRequest
+import com.shawn.githubdemo.model.dto.repoList.RepoListItem
+import com.shawn.githubdemo.model.dto.repoList.RepoListRequest
 import com.shawn.githubdemo.model.sealeds.UiState
-import com.shawn.githubdemo.model.source.repository.list.ListRepositoryImpl
+import com.shawn.githubdemo.model.source.repository.repoList.RepoListRepositoryImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class ListViewModel(private var listRepositoryImpl: ListRepositoryImpl) : ViewModel() {
+class RepoListViewModel(private var listRepositoryImpl: RepoListRepositoryImpl) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState
-    private val _listData = MutableStateFlow<List<RepositoriesListItem>>(emptyList())
-    val listData : StateFlow<List<RepositoriesListItem>> = _listData
+    private val _listData = MutableStateFlow<List<RepoListItem>>(emptyList())
+    val listData : StateFlow<List<RepoListItem>> = _listData
     private var currentPage = 1
     private var q: String? = null
 
@@ -24,9 +24,9 @@ class ListViewModel(private var listRepositoryImpl: ListRepositoryImpl) : ViewMo
             viewModelScope.launch {
                 _uiState.value = UiState.Loading
                 currentPage = 1
-                listRepositoryImpl.getFirstPageList(ListRequest(q = it, page = currentPage))
+                listRepositoryImpl.getFirstPageList(RepoListRequest(q = it, page = currentPage))
                     .collect {
-                        Log.d("shawnTest","getFirstPageList: ${it.total_count}")
+                        Log.d("shawnTest","getFirstPageList: ${it.totalCount}")
                         _listData.value = it.items
                         _uiState.value = UiState.Success
 
@@ -43,7 +43,7 @@ class ListViewModel(private var listRepositoryImpl: ListRepositoryImpl) : ViewMo
             viewModelScope.launch {
                 _uiState.value = UiState.Loading
                 currentPage++
-                listRepositoryImpl.getNextPageList(ListRequest(q = it, page = currentPage))
+                listRepositoryImpl.getNextPageList(RepoListRequest(q = it, page = currentPage))
                     .collect {
                         if(it.items.isNotEmpty()) {
                             _listData.value += it.items

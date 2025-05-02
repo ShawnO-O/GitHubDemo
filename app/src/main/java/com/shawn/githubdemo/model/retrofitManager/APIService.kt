@@ -1,6 +1,6 @@
 package com.shawn.githubdemo.model.retrofitManager
 
-import com.shawn.githubdemo.model.dto.list.RepositoriesListResponse
+import com.shawn.githubdemo.model.dto.repoList.RepoListResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -14,5 +14,5 @@ interface APIService {
         @Query("q") q: String,
         @Query("perPage") perPage: String,
         @Query("page") page: String,
-    ): Response<RepositoriesListResponse>
+    ): Response<RepoListResponse>
 }

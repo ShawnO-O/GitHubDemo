@@ -6,8 +6,9 @@ import com.shawn.githubdemo.model.dto.repoList.RepoListResponse
 import com.shawn.githubdemo.model.retrofitManager.APIService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class ListRemoteDataSource(private val apiService: APIService) {
+class ListRemoteDataSource @Inject constructor(private val apiService: APIService) {
     fun getFirstPageList(
       request: RepoListRequest
     ): Flow<RepoListResponse> = flow{

@@ -3,12 +3,18 @@ package com.shawn.githubdemo.model.retrofitManager
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.shawn.githubdemo.model.data.UrlManager
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 
+@Module
+@InstallIn(SingletonComponent::class)
 object RetrofitManager {
         private var retrofit: Retrofit
     private var apiService : APIService
@@ -31,7 +37,7 @@ object RetrofitManager {
             .baseUrl(baseUrl)
             .client(httpClient)
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
-            .addConverterFactory(MoshiConverterFactory.create())
+//            .addConverterFactory(MoshiConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 
@@ -40,6 +46,8 @@ object RetrofitManager {
 
     }
 
+    @Singleton
+    @Provides
     fun getApiService():APIService{
         return apiService
     }

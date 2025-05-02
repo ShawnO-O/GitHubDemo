@@ -24,14 +24,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.shawn.githubdemo.R
 
 @Composable
-fun ListScreen(listViewModel: RepoListViewModel) {
-        Scaffold{ innerPadding->
-            ContentList(innerPadding)
+fun ListScreen(
+    listViewModel: RepoListViewModel = hiltViewModel()
+) {
 
-        }
+    Scaffold { innerPadding ->
+
+        ContentList(innerPadding)
+
+    }
 }
 
 
@@ -39,8 +44,8 @@ fun ListScreen(listViewModel: RepoListViewModel) {
 fun ContentList(innerPadding: PaddingValues) {
     LazyColumn(
         modifier = Modifier.padding(innerPadding),
-    ){
-        items(10){
+    ) {
+        items(10) {
             ListItem()
         }
     }
@@ -67,7 +72,9 @@ fun ListItem() {
                     contentDescription = ""
                 )
                 Column(
-                    modifier = Modifier.fillMaxWidth().padding(start = 4.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 4.dp),
                 ) {
                     Text(text = "name")
 
@@ -94,7 +101,9 @@ fun ListItem() {
                     .padding(8.dp)
             ) {
                 Row(
-                    modifier = Modifier.weight(1f).padding(start = 4.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
@@ -104,7 +113,9 @@ fun ListItem() {
                     Text(text = "10")
                 }
                 Row(
-                    modifier = Modifier.weight(1f).padding(start = 4.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
@@ -114,7 +125,9 @@ fun ListItem() {
                     Text(text = "50")
                 }
                 Row(
-                    modifier = Modifier.weight(1f).padding(start = 4.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(

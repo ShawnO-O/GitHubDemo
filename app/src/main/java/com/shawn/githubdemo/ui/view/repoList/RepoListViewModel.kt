@@ -7,11 +7,14 @@ import com.shawn.githubdemo.model.dto.repoList.RepoListItem
 import com.shawn.githubdemo.model.dto.repoList.RepoListRequest
 import com.shawn.githubdemo.model.sealeds.UiState
 import com.shawn.githubdemo.model.source.repository.repoList.RepoListRepositoryImpl
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class RepoListViewModel(private var listRepositoryImpl: RepoListRepositoryImpl) : ViewModel() {
+@HiltViewModel
+class RepoListViewModel @Inject constructor(private var listRepositoryImpl: RepoListRepositoryImpl) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState
     private val _listData = MutableStateFlow<List<RepoListItem>>(emptyList())

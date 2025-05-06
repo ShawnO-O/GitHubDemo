@@ -12,7 +12,7 @@ interface APIService {
     suspend fun getSearchList(
         @Header("Authorization") token: String,
         @Query("q") q: String,
-        @Query("perPage") perPage: String,
         @Query("page") page: String,
+        @Query("perPage") perPage: String,
     ): Response<RepoListResponse>
 }

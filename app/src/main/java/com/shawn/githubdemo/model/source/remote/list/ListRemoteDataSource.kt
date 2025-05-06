@@ -13,7 +13,7 @@ class ListRemoteDataSource @Inject constructor(private val apiService: APIServic
       request: RepoListRequest
     ): Flow<RepoListResponse> = flow{
         val token = "Bearer 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"
-        val response = apiService.getSearchList(token,request.q, request.perPage.toString(), request.page.toString())
+        val response = apiService.getSearchList(token,request.q, request.page.toString(), request.perPage.toString())
         if(response.isSuccessful){
             val listResponse = response.body()
             Log.d("shawnTest","listResponse:$listResponse")

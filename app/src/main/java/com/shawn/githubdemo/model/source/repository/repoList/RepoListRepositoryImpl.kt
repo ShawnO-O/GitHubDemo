@@ -9,11 +9,7 @@ import javax.inject.Inject
 
 @ActivityRetainedScoped
 class RepoListRepositoryImpl @Inject constructor(private var listRemoteDataSource: ListRemoteDataSource) : RepoListRepository {
-    override fun getFirstPageList( request: RepoListRequest): Flow<RepoListResponse> {
+    override fun getRepoPageList(request: RepoListRequest): Flow<RepoListResponse> {
        return listRemoteDataSource.getFirstPageList(request)
-    }
-
-    override fun getNextPageList( request: RepoListRequest): Flow<RepoListResponse> {
-        return listRemoteDataSource.getFirstPageList(request)
     }
 }

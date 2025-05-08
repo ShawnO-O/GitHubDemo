@@ -16,6 +16,7 @@ class ListRemoteDataSource @Inject constructor(private val apiService: APIServic
       request: RepoListRequest
     ): Flow<RepoListResponse> = flow{
         val token = "Bearer "+ readTokenFromAssets(GitHubDemoApplication.applicationContext())
+
         val response = apiService.getSearchList(token,request.q, request.page.toString(), request.perPage.toString())
         if(response.isSuccessful){
             val listResponse = response.body()

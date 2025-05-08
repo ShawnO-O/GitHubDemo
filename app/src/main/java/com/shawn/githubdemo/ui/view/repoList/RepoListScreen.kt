@@ -4,9 +4,11 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -38,16 +40,16 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.shawn.githubdemo.R
 import com.shawn.githubdemo.model.dto.repoList.RepoListItem
+import com.shawn.githubdemo.model.sealeds.UiState
+import com.shawn.githubdemo.utils.FullPageLoading
 
 @Composable
-fun ListScreen(
+fun RepoListScreen(
     listViewModel: RepoListViewModel = hiltViewModel()
 ) {
     listViewModel.getFirstPageList("kotlin")
-    val repos = listViewModel.listData.collectAsState()
     Scaffold { innerPadding ->
         ContentList(
-            repos.value,
             innerPadding,
             listViewModel
         )
@@ -57,37 +59,68 @@ fun ListScreen(
 
 @Composable
 fun ContentList(
-    list: List<RepoListItem>,
     innerPadding: PaddingValues,
     listViewModel: RepoListViewModel
 ) {
-        val buffer = 3  // load more when scroll reaches last n item, where n >= 1
-        val listState = rememberLazyListState()
-        val reachedBottom: Boolean by remember {
-            derivedStateOf {
-                val lastVisibleItem = listState.layoutInfo.visibleItemsInfo.lastOrNull()
-                lastVisibleItem?.index != 0 && lastVisibleItem?.index == listState.layoutInfo.totalItemsCount - buffer
+    val buffer = 3  // load more when scroll reaches last n item, where n >= 1
+    val listState = rememberLazyListState()
+    val uiState by listViewModel.uiState.collectAsState()
+    val repos = listViewModel.listData.collectAsState()
+    val reachedBottom: Boolean by remember {
+        derivedStateOf {
+            val lastVisibleItem = listState.layoutInfo.visibleItemsInfo.lastOrNull()
+            lastVisibleItem?.index != 0 && lastVisibleItem?.index == listState.layoutInfo.totalItemsCount - buffer
+        }
+    }
+
+    LaunchedEffect(reachedBottom) {
+        if (reachedBottom) {
+            listViewModel.getNextPageList()
+        }
+    }
+
+    when (uiState) {
+        is UiState.LoadingFirst -> {
+            FullPageLoading()
+        }
+
+        is UiState.LoadingNotFirst -> {
+
+        }
+
+        is UiState.Empty -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(text = (uiState as UiState.Empty).message)
             }
         }
-        LaunchedEffect(reachedBottom) {
-            if (reachedBottom) {
-                listViewModel.getNextPageList()
+
+        is UiState.Error -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(text = (uiState as UiState.Error).message)
             }
         }
-        LazyColumn(
-            state = listState,
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            items(list) { item ->
-                ListItem(item)
+
+        is UiState.Success -> {
+            Column {
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier.padding(innerPadding).weight(1f)
+                ) {
+                    items(repos.value) { item ->
+                        ListItem(item)
+                    }
+                }
             }
         }
+
+        is UiState.NoNetwork -> TODO()
+    }
 }
 
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun ListItem(repoListItem:RepoListItem) {
+fun ListItem(repoListItem: RepoListItem) {
     repoListItem.apply {
         Card(
             modifier = Modifier
@@ -105,7 +138,10 @@ fun ListItem(repoListItem:RepoListItem) {
                     GlideImage(
                         model = owner.avatarUrl,
                         contentDescription = "",
-                        modifier = Modifier.padding(4.dp).clip(RoundedCornerShape(160.dp)).size(50.dp)
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .clip(RoundedCornerShape(160.dp))
+                            .size(50.dp)
                     )
                     Column(
                         modifier = Modifier

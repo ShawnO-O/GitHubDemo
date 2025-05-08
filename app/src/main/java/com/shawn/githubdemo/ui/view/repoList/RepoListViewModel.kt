@@ -18,7 +18,7 @@ import javax.inject.Inject
 class RepoListViewModel @Inject constructor(
     private val getRepoListUseCase: GetRepoListUseCase
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    private val _uiState = MutableStateFlow<UiState>(UiState.LoadingFirst)
     val uiState: StateFlow<UiState> = _uiState
     private val _listData = MutableStateFlow<List<RepoListItem>>(emptyList())
     val listData: StateFlow<List<RepoListItem>> = _listData
@@ -29,7 +29,7 @@ class RepoListViewModel @Inject constructor(
         q?.let {
             this.q = q
             viewModelScope.launch {
-                _uiState.value = UiState.Loading
+                _uiState.value = UiState.LoadingFirst
                 currentPage = 1
                 getRepoListUseCase(it, currentPage)
                     .catch { e ->
@@ -49,7 +49,7 @@ class RepoListViewModel @Inject constructor(
         Log.d("shawnTest", "getNextPageList")
         q?.let {
             viewModelScope.launch {
-                _uiState.value = UiState.Loading
+                _uiState.value = UiState.LoadingNotFirst
                 currentPage++
                 getRepoListUseCase(it, currentPage)
                     .catch { e->

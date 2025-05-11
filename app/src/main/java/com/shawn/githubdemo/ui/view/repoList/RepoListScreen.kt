@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
@@ -25,13 +26,16 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,18 +45,35 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.shawn.githubdemo.R
 import com.shawn.githubdemo.model.dto.repoList.RepoListItem
 import com.shawn.githubdemo.model.sealeds.UiState
+import com.shawn.githubdemo.ui.widget.EmptyScreen
 import com.shawn.githubdemo.utils.FullPageLoading
 
 @Composable
 fun RepoListScreen(
     listViewModel: RepoListViewModel = hiltViewModel()
 ) {
-    listViewModel.getFirstPageList("kotlin")
+    var tfKeyword by remember { mutableStateOf("") }
     Scaffold { innerPadding ->
-        ContentList(
-            innerPadding,
-            listViewModel
-        )
+        Column {
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(1f).padding(10.dp),
+                value = tfKeyword,
+                label = {
+                    Text(stringResource(R.string.searchByKeyword))
+                },
+                onValueChange = { newValue ->
+                    tfKeyword = newValue
+                    if(newValue.length >= 2) {
+                        listViewModel.getFirstPageList(newValue)
+                    }
+                },
+            )
+            //這邊還缺一個歷史紀錄，搭配room的好時機
+            ContentList(
+                innerPadding,
+                listViewModel
+            )
+        }
     }
 }
 
@@ -80,6 +101,9 @@ fun ContentList(
     }
 
     when (uiState) {
+        is UiState.FirstEmpty ->{
+            EmptyScreen(stringResource(R.string.searchByKeyword))
+        }
         is UiState.LoadingFirst -> {
             FullPageLoading()
         }
@@ -104,7 +128,9 @@ fun ContentList(
             Column {
                 LazyColumn(
                     state = listState,
-                    modifier = Modifier.padding(innerPadding).weight(1f)
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .weight(1f)
                 ) {
                     items(repos.value) { item ->
                         ListItem(item)

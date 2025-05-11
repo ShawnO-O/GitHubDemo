@@ -7,7 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.shawn.githubdemo.ui.view.mineInfo.MineInfoScreen
+import com.shawn.githubdemo.ui.view.UserInfo.MineInfoScreen
+import com.shawn.githubdemo.ui.view.profileInfo.ProfileScreen
 import com.shawn.githubdemo.ui.view.repoList.RepoListScreen
 import com.shawn.githubdemo.ui.view.userList.UserListScreen
 
@@ -28,7 +29,7 @@ fun NavigationConfigurations(
             UserListScreen()
         }
         composable(BottomNavItem.Mine.route){
-            MineInfoScreen()
+            ProfileScreen()
         }
     }
 }

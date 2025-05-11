@@ -1,4 +1,4 @@
-package com.shawn.githubdemo.ui.view.mineInfo
+package com.shawn.githubdemo.ui.view.UserInfo
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">GitHubDemo</string>
+    <string name="searchByKeyword">Please input keyword</string>
 </resources>

@@ -1,6 +1,5 @@
 package com.shawn.githubdemo.ui.view.profileInfo
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,8 +31,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintSet
+import androidx.constraintlayout.compose.layoutId
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -90,19 +93,43 @@ fun ProfileContent(
         is UiState.FirstEmpty -> TODO()
     }
 }
+@Preview(showBackground = true)
+@Composable
+fun ProfilePreview(){
+    ProfilePage(UserResponse(login = "Shawn0.0"))
+}
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ProfilePage(profileInfo: UserResponse) {
-    Column(
-        modifier = Modifier.fillMaxSize()
+    ConstraintLayout(
+        modifier = Modifier.fillMaxSize(),
+        constraintSet = ConstraintSet{
+            val header = createRefFor("header")
+            val avatar = createRefFor("avatar")
+            val profile = createRefFor("profile")
+            constrain(header){
+                top.linkTo(parent.top)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            }
+            constrain(avatar){
+                bottom.linkTo(profile.top)
+                start.linkTo(parent.start,16.dp)
+            }
+            constrain(profile){
+                top.linkTo(header.bottom,60.dp)
+                start.linkTo(avatar.start)
+            }
+        }
+
     ) {
         //Header
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(colorResource(R.color.teal_300))
-
+                .layoutId("header")
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -110,7 +137,7 @@ fun ProfilePage(profileInfo: UserResponse) {
                 Image(
                     painterResource(R.drawable.ic_github),
                     contentDescription = null,
-                    modifier = Modifier.scale(0.5f)
+                    modifier = Modifier.scale(0.4f)
                     )
                 Text(
                     text = "GitHubDemo",
@@ -119,23 +146,23 @@ fun ProfilePage(profileInfo: UserResponse) {
                 )
             }
         }
+        GlideImage(
+            model = profileInfo.avatar_url,
+            contentDescription = "",
+            modifier = Modifier
+                .size(100.dp)
+                .clip(CircleShape)
+                .border(2.dp, Color.Gray, CircleShape)
+                .layoutId("avatar")
+        )
         //頭像與基本資料
         // 頭像與基本資料
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(16.dp)
+                .layoutId("profile"),
         ) {
-            Log.d("shawnTest","${profileInfo.avatar_url}")
-            GlideImage(
-                model = profileInfo.avatar_url,
-                contentDescription = "",
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .border(2.dp, Color.Gray, CircleShape)
-            )
             Spacer(modifier = Modifier.height(8.dp))
             Text(profileInfo.login, fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Text(profileInfo.type, color = Color.Gray)

@@ -21,6 +21,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.shawn.githubdemo.navigation.BottomNavItem
 import com.shawn.githubdemo.navigation.NavigationConfigurations
+import com.shawn.githubdemo.navigation.SwipeableNavigation
 import com.shawn.githubdemo.ui.theme.GitHubDemoTheme
 import com.shawn.githubdemo.ui.view.repoList.RepoListScreen
 import com.shawn.githubdemo.ui.view.repoList.RepoListViewModel
@@ -56,7 +57,7 @@ fun MainScreen() {
         }
     ) { innerPadding ->
         NavigationConfigurations(navController, innerPadding)
-
+        SwipeableNavigation(navController)
     }
 }
 

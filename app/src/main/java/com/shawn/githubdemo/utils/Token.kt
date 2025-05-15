@@ -4,9 +4,9 @@ import android.content.Context
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
-fun readTokenFromAssets(context: Context): String? {
+fun getTokenFromAssets(context: Context): String {
     return try {
-        val inputStream = context.assets.open("token.txt")
+        val inputStream = context.assets.open("TokenKey.txt")
         val reader = BufferedReader(InputStreamReader(inputStream))
         val stringBuilder = StringBuilder()
         var line: String? = reader.readLine()
@@ -18,6 +18,6 @@ fun readTokenFromAssets(context: Context): String? {
         stringBuilder.toString()
     } catch (e: Exception) {
         e.printStackTrace()
-        null
+        ""
     }
 }

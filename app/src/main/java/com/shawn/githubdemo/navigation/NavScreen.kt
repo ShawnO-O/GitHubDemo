@@ -10,4 +10,5 @@ sealed class BottomNavItem(val route:String,val icon:ImageVector,val label:Strin
     data object Repo :BottomNavItem("repo", Icons.Default.Search,"Repo")
     data object User :BottomNavItem("user", Icons.Default.Person,"User")
     data object Mine :BottomNavItem("Mine", Icons.Default.Info,"Mine")
+    data object UserDetail :BottomNavItem("userDetail", Icons.Default.Info,"UserDetail")
 }

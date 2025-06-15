@@ -1,18 +1,19 @@
 package com.shawn.githubdemo.ui.view.repoList
 
+import SearchListItem
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,10 +44,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.shawn.githubdemo.R
-import com.shawn.githubdemo.model.dto.repoList.RepoListItem
 import com.shawn.githubdemo.model.sealeds.UiState
 import com.shawn.githubdemo.ui.widget.EmptyScreen
 import com.shawn.githubdemo.utils.FullPageLoading
+import com.shawn.githubdemo.utils.LoadingFooter
 
 @Composable
 fun RepoListScreen(
@@ -54,23 +55,26 @@ fun RepoListScreen(
 ) {
     var tfKeyword by remember { mutableStateOf("") }
     Scaffold { innerPadding ->
-        Column {
+        Column(
+            modifier = Modifier.padding(innerPadding)
+        ) {
             OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(1f).padding(10.dp),
+                modifier = Modifier
+                    .fillMaxWidth(1f)
+                    .padding(10.dp),
                 value = tfKeyword,
                 label = {
                     Text(stringResource(R.string.searchByKeyword))
                 },
                 onValueChange = { newValue ->
                     tfKeyword = newValue
-                    if(newValue.length >= 2) {
+                    if (newValue.length >= 2) {
                         listViewModel.getFirstPageList(newValue)
                     }
                 },
             )
             //這邊還缺一個歷史紀錄，搭配room的好時機
             ContentList(
-                innerPadding,
                 listViewModel
             )
         }
@@ -80,7 +84,6 @@ fun RepoListScreen(
 
 @Composable
 fun ContentList(
-    innerPadding: PaddingValues,
     listViewModel: RepoListViewModel
 ) {
     val buffer = 3  // load more when scroll reaches last n item, where n >= 1
@@ -101,15 +104,20 @@ fun ContentList(
     }
 
     when (uiState) {
-        is UiState.FirstEmpty ->{
+        is UiState.FirstEmpty -> {
             EmptyScreen(stringResource(R.string.searchByKeyword))
         }
+
         is UiState.LoadingFirst -> {
             FullPageLoading()
         }
 
         is UiState.LoadingNotFirst -> {
-
+            if (repos.value.isNotEmpty()) {
+                DisplayRepoList(listState,repos.value,true)
+            } else {
+                FullPageLoading()
+            }
         }
 
         is UiState.Empty -> {
@@ -125,29 +133,43 @@ fun ContentList(
         }
 
         is UiState.Success -> {
-            Column {
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .weight(1f)
-                ) {
-                    items(repos.value) { item ->
-                        ListItem(item)
-                    }
-                }
-            }
+            DisplayRepoList(listState,repos.value,false)
         }
 
         is UiState.NoNetwork -> TODO()
     }
 }
 
+@Composable
+fun DisplayRepoList(
+    listState: LazyListState,
+    repos: List<SearchListItem>,
+    isLoadingMore:Boolean
+) {
+    Column {
+        LazyColumn(
+            state = listState,
+            modifier = Modifier
+                .padding(5.dp)
+                .weight(1f)
+        ) {
+            items(repos) { item ->
+                ListItem(item)
+            }
+            if(isLoadingMore){
+                item{
+                    LoadingFooter()
+                }
+            }
+        }
+    }
+}
+
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun ListItem(repoListItem: RepoListItem) {
-    repoListItem.apply {
+fun ListItem(searchListItem: SearchListItem) {
+    searchListItem.apply {
         Card(
             modifier = Modifier
                 .background(Color.Transparent)

@@ -37,7 +37,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             GitHubDemoTheme {
                 MainScreen()
-//                RepoListScreen(listViewModel)
             }
         }
     }

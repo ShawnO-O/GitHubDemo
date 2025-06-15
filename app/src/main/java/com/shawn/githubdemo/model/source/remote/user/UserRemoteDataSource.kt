@@ -11,11 +11,9 @@ import javax.inject.Inject
 
 class UserRemoteDataSource@Inject constructor(private val apiService: APIService) {
     fun getMineUser(): Flow<UserResponse> = flow {
-        val response = apiService.getUser(getTokenFromAssets(GitHubDemoApplication.applicationContext()))
-        Log.d("shawnTest","${response.isSuccessful}")
+        val response = apiService.getUser("Bearer "+getTokenFromAssets(GitHubDemoApplication.applicationContext()))
         if (response.isSuccessful) {
             val userResponse = response.body()
-            Log.d("shawnTest","$userResponse")
             if (userResponse != null) {
                 emit(userResponse)
             } else {

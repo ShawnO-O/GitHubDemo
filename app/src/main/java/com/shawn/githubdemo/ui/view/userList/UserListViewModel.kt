@@ -1,4 +1,4 @@
-package com.shawn.githubdemo.ui.view.repoList
+package com.shawn.githubdemo.ui.view.userList
 
 import SearchListItem
 import androidx.lifecycle.ViewModel
@@ -17,10 +17,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RepoListViewModel @Inject constructor(
+class UserListViewModel @Inject constructor(
     private val getSearchListUseCase: GetSearchListUseCase
-) : ViewModel() {
-    private val _uiState = MutableStateFlow<UiState>(FirstEmpty(GitHubDemoApplication.applicationContext().getString(R.string.searchByKeyword)))
+):ViewModel()  {
+    private val _uiState = MutableStateFlow<UiState>(
+        FirstEmpty(
+            GitHubDemoApplication.applicationContext().getString(
+                R.string.searchByKeyword))
+    )
     val uiState: StateFlow<UiState> = _uiState
     private val _listData = MutableStateFlow<List<SearchListItem>>(emptyList())
     val listData: StateFlow<List<SearchListItem>> = _listData

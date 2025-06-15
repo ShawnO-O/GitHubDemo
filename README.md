@@ -1,5 +1,5 @@
 # GitHubDemo
-## Friendly reminder: You should put your GitHub token on /asserts/token.txt.
+## Friendly reminder: You should put your GitHub token on /asserts/TokenKey.txt.
  
 🔧 Architecture
 This project is based on MVVM (Model–View–ViewModel) architecture and follows clean architecture principles with separation of concerns.

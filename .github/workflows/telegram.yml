@@ -3,18 +3,19 @@ name: Telegram Notification on Commit
 on:
   push:
     branches:
-      - '**' #監聽所有分支的push事件
+      - '**' 
 
 jobs:
   send_message:
-    runs-on:ubuntu-latest
-
-    steps:
+    runs-on: ubuntu-latest # 修正：runs-on: 和 ubuntu-latest 之間需要空格
+    
+    steps: # 修正：steps 之後換行，並開始縮排
       - name: Send Commit Notification to Telegram
         uses: appleboy/telegram-action@master
         with:
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          # 注意：多行訊息 (message: |) 下方的文字需要額外縮排
           message: |
             📢 **GitHub Actions 通知**
             
@@ -30,4 +31,5 @@ jobs:
             `${{ github.event.head_commit.message }}`
             
             🔗 **詳細資訊**: [查看 Commit](${{ github.event.head_commit.url }})
-        parse_mode: markdown
+          
+          parse_mode: markdown # 確保 parse_mode 與 with 同層級

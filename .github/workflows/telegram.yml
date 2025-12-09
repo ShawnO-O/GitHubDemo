@@ -1,0 +1,33 @@
+name: Telegram Notification on Commit
+
+on:
+  push:
+    branches:
+      - '**' #監聽所有分支的push事件
+
+jobs:
+  send_message:
+    runs-on:ubuntu-latest
+
+    steps:
+      - name: Send Commit Notification to Telegram
+        uses: appleboy/telegram-action@master
+        with:
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          message: |
+            📢 **GitHub Actions 通知**
+            
+            ---
+            
+            🛠️ **專案**: `${{ github.repository }}`
+            
+            👤 **提交者**: `${{ github.actor }}`
+            
+            🌿 **分支**: `${{ github.ref_name }}`
+            
+            💬 **訊息**: 
+            `${{ github.event.head_commit.message }}`
+            
+            🔗 **詳細資訊**: [查看 Commit](${{ github.event.head_commit.url }})
+        parse_mode: markdown
